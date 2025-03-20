@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: "/(.)",
         headers: [
           { key: "X-Frame-Options", value: "DENY" }, // Blokuje osadzanie w iframe
           { key: "X-XSS-Protection", value: "1; mode=block" }, // Zapobiega XSS
@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+  // Prawidłowa konfiguracja bez odniesień do Turbopacka
+  webpack: (config) => {
+    // Zachowanie konfiguracji webpack
+    config.optimization = {
+      minimize: false, // Wyłączenie agresywnej optymalizacji
+    };
+    return config;
   },
 };
 
