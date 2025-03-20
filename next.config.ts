@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Prawidłowa konfiguracja bez odniesień do Turbopacka
+  webpack: (config) => {
+    // Zachowanie konfiguracji webpack
+    config.optimization = {
+      minimize: false, // Wyłączenie agresywnej optymalizacji
+    };
+    return config;
+  },
 };
 
 export default nextConfig;
