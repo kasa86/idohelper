@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: "/(.)",
         headers: [
           { key: "X-Frame-Options", value: "DENY" }, // Blokuje osadzanie w iframe
           { key: "X-XSS-Protection", value: "1; mode=block" }, // Zapobiega XSS
