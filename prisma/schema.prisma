@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  name      String?
+  email     String     @unique
+  password  String
+  role      Role       @default(USER)
+  status    UserStatus @default(PENDING)
+  companyId String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  company   Company?   @relation(fields: [companyId], references: [id])
+}
+
+model Company {
+  id            String         @id @default(cuid())
+  name          String         @unique
+  status        String?        @default("ACTIVE")
+  createdAt     DateTime       @default(now())
+  Product       Product[]
+  users         User[]
+  companyLimits CompanyLimits?
+}
+
+model CompanyLimits {
+  id           String  @id @default(cuid())
+  companyId    String  @unique
+  aiLimit      Int     @default(100)
+  aiUsed       Int     @default(0)
+  storageLimit Int     @default(5)
+  storageUsed  Int     @default(0)
+  company      Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Description {
+  id        String   @id
+  content   String
+  productId String
+  createdAt DateTime @default(now())
+  Product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id          String        @id
+  name        String
+  description String?
+  companyId   String
+  createdAt   DateTime      @default(now())
+  Description Description[]
+  Company     Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  Translation Translation[]
+}
+
+model Translation {
+  id          String   @id
+  productId   String
+  language    String
+  name        String?
+  shortDesc   String?
+  longDesc    String?
+  seoTitle    String?
+  seoDesc     String?
+  seoKeywords String?
+  createdAt   DateTime @default(now())
+  Product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  CREATOR
+  REVIEWER
+  APPROVER
+  USER
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
